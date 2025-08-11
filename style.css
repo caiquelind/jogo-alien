@@ -1,0 +1,116 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden; /* Prevents scrollbars */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+canvas {
+    background-color: #0c0a18; /* Deep space blue */
+    display: block;
+    touch-action: none; /* Important for mobile controls */
+}
+
+#ui-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allows canvas interaction */
+}
+
+#score-display {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1.5em;
+    text-shadow: 2px 2px 4px #000;
+}
+
+.overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 2em;
+    border-radius: 15px;
+    text-align: center;
+    pointer-events: all; /* Make buttons clickable */
+    width: 80%;
+    max-width: 400px;
+}
+
+.overlay h1 {
+    margin-top: 0;
+    color: #ff4500;
+}
+
+.overlay button {
+    margin-top: 1em;
+    padding: 10px 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff4500;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+.overlay button:hover {
+    background-color: #ff6347;
+}
+
+.instructions {
+    margin: 1.5em 0;
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: #ddd;
+}
+
+#language-selector {
+    margin-bottom: 1.5em;
+}
+
+#language-selector button {
+    background-color: #444;
+    font-size: 0.9em;
+    padding: 8px 15px;
+}
+
+#language-selector button:hover {
+    background-color: #666;
+}
+
+#shoot-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 80px;
+    height: 80px;
+    background-color: rgba(255, 69, 0, 0.7);
+    border: 3px solid white;
+    border-radius: 50%;
+    pointer-events: all;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5em;
+    color: white;
+}
+
+#shoot-button::after {
+    content: '💥';
+}
+
+.hidden {
+    display: none !important;
+}

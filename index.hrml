@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Galaxy Shooter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- UI Elements -->
+    <div id="ui-container">
+        <div id="score-display"><span data-text-key="scoreText">Score</span>: <span id="score">0</span></div>
+
+        <div id="start-screen" class="overlay">
+            <h1 data-text-key="title">Galaxy Shooter</h1>
+            <p data-text-key="subtitle">Destroy the invaders before they reach you!</p>
+            
+            <div class="instructions">
+                <strong data-text-key="instructionsPC">PC:</strong> Use Arrow Keys to move & Spacebar to shoot.<br>
+                <strong data-text-key="instructionsMobile">Mobile:</strong> Drag to move & use the Shoot button.
+            </div>
+
+            <!-- Language Selection -->
+            <div id="language-selector">
+                <button id="lang-en">English</button>
+                <button id="lang-pt">Português</button>
+            </div>
+
+            <button id="startButton" data-text-key="startButton">Start Game</button>
+        </div>
+
+        <div id="gameOver-screen" class="overlay hidden">
+            <h1 data-text-key="gameOverTitle">Game Over</h1>
+            <p><span data-text-key="finalScoreText">Final Score</span>: <span id="finalScore">0</span></p>
+            <button id="restartButton" data-text-key="restartButton">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Mobile Controls -->
+    <button id="shoot-button" class="hidden"></button>
+
+    <script src="script.js"></script>
+</body>
+</html>
