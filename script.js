@@ -213,7 +213,7 @@ function spawnAngel() {
             const x = Math.random() * (canvas.width - 50) + 25;
             enemies.push(new Enemy(x, -30, 'angel'));
         }
-    }, 15000); // Angel spawns every 15 seconds
+    }, 10000); // Angel spawns every 10 seconds
 }
 
 function stopSpawning() {
