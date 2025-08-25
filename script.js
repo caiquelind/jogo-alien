@@ -81,7 +81,7 @@ class Player {
         this.height = 50;
         this.x = canvas.width / 2 - this.width / 2;
         this.y = canvas.height - this.height - 20;
-        this.speed = 12;
+        this.speed = 120;
         this.emoji = '🚀';
     }
 
