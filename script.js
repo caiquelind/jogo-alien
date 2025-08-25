@@ -81,7 +81,7 @@ class Player {
         this.height = 50;
         this.x = canvas.width / 2 - this.width / 2;
         this.y = canvas.height - this.height - 20;
-        this.speed = 8;
+        this.speed = 12;
         this.emoji = '🚀';
     }
 
@@ -133,7 +133,7 @@ class Enemy {
 
         if (this.type === 'angel') {
             this.emoji = '👼';
-            this.velocity = { y: Math.random() * 1.5 + 0.5 };
+            this.velocity = { y: Math.random() * 3 + 0.5 };
         } else {
             this.emoji = ['👾', '👽', '🛸'][Math.floor(Math.random() * 3)];
             this.velocity = { y: Math.random() * 2 + 1 };
@@ -222,11 +222,12 @@ function stopSpawning() {
 }
 
 function handleCollision() {
+    // Loop para verificar colisão de projéteis com inimigos
     for (let pIndex = projectiles.length - 1; pIndex >= 0; pIndex--) {
         const proj = projectiles[pIndex];
         for (let eIndex = enemies.length - 1; eIndex >= 0; eIndex--) {
             const enemy = enemies[eIndex];
-            if (!enemy) continue; // Skip if enemy is already gone
+            if (!enemy) continue; 
             
             const dist = Math.hypot(proj.x - enemy.x, proj.y - enemy.y);
 
@@ -240,10 +241,10 @@ function handleCollision() {
                             particles.push(new Particle(currentEnemy.x, currentEnemy.y, '#ffff00'));
                         }
                     }
-                    enemies.length = 0; // Clear all enemies
+                    enemies.length = 0; 
                     projectiles.splice(pIndex, 1);
                     scoreDisplay.textContent = score;
-                    return; // Exit collision checks for this frame
+                    return; 
                 } else {
                     for (let i = 0; i < 15; i++) {
                         particles.push(new Particle(enemy.x, enemy.y, '#ff4500'));
@@ -252,22 +253,29 @@ function handleCollision() {
                     projectiles.splice(pIndex, 1);
                     score += 100;
                     scoreDisplay.textContent = score;
-                    // Since projectile is gone, break inner loop and go to next projectile
                     break; 
                 }
             }
         }
     }
 
-    enemies.forEach((enemy) => {
-        const dist = Math.hypot(player.x + player.width/2 - enemy.x, player.y + player.height/2 - enemy.y);
-        if (dist - enemy.radius - player.width / 2 < 1 || enemy.y > canvas.height) {
+    // Loop para verificar colisão de inimigos com o jogador
+    enemies.forEach((enemy, index) => {
+        const dist = Math.hypot(player.x + player.width / 2 - enemy.x, player.y + player.height / 2 - enemy.y);
+
+        // CONDIÇÃO DE GAME OVER: Acontece se um inimigo que NÃO é um anjo colidir ou passar da tela
+        if (enemy.type !== 'angel' && (dist - enemy.radius - player.width / 2 < 1 || enemy.y > canvas.height)) {
             stopSpawning();
             cancelAnimationFrame(animationId);
             animationId = null;
             finalScoreDisplay.textContent = score;
             gameOverScreen.classList.remove('hidden');
             shootButton.classList.add('hidden');
+        }
+
+        // Se um anjo passar pela tela, apenas o removemos
+        if (enemy.type === 'angel' && enemy.y > canvas.height) {
+            setTimeout(() => enemies.splice(index, 1), 0);
         }
     });
 }
