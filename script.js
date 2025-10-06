@@ -66,8 +66,8 @@ function setLanguage(lang) {
 
 
 // Game Variables
-let player, projectiles, enemies, particles, score, animationId;
-let enemyInterval, angelInterval;
+let player, projectiles, enemies, particles, stars, meteorites, score, animationId;
+let enemyInterval, angelInterval, meteoriteInterval;
 const keys = {
     ArrowLeft: false,
     ArrowRight: false,
@@ -183,6 +183,70 @@ class Particle {
     }
 }
 
+class Star {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.radius = Math.random() * 1.5;
+        this.speed = Math.random() * 2 + 0.5;
+        this.color = 'white';
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+
+    update() {
+        this.y += this.speed;
+        if (this.y > canvas.height) {
+            this.y = 0;
+            this.x = Math.random() * canvas.width;
+        }
+        this.draw();
+    }
+}
+
+class Meteorite {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = -Math.random() * canvas.height; // Start above screen
+        this.radius = Math.random() * 10 + 5; // Size between 5 and 15
+        this.speed = Math.random() * 3 + 1; // Speed between 1 and 4
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+        this.color = '#8B4513'; // Brown color for meteorite (not used if emoji is used)
+        this.emoji = '🪨'; // Using a rock emoji for now, or could draw a shape
+    }
+
+    draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.font = `${this.radius * 2}px sans-serif`; // Scale emoji with radius
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.emoji, 0, 0);
+        ctx.restore();
+    }
+
+    update() {
+        this.y += this.speed;
+        this.rotation += this.rotationSpeed;
+        if (this.y > canvas.height + this.radius) { // Reset when out of view
+            this.y = -this.radius;
+            this.x = Math.random() * canvas.width;
+            this.radius = Math.random() * 10 + 5;
+            this.speed = Math.random() * 3 + 1;
+            this.rotation = Math.random() * Math.PI * 2;
+            this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+        }
+        this.draw();
+    }
+}
+
 
 // --- Game Functions ---
 function init() {
@@ -190,12 +254,20 @@ function init() {
     projectiles = [];
     enemies = [];
     particles = [];
+    stars = [];
+    meteorites = [];
     score = 0;
     scoreDisplay.textContent = 0;
     finalScoreDisplay.textContent = 0;
     
+    // Create initial stars
+    for (let i = 0; i < 100; i++) {
+        stars.push(new Star());
+    }
+
     clearInterval(enemyInterval);
     clearInterval(angelInterval);
+    clearInterval(meteoriteInterval); // Clear meteorite interval too
 }
 
 function spawnEnemies() {
@@ -216,9 +288,18 @@ function spawnAngel() {
     }, 10000); // Angel spawns every 10 seconds
 }
 
+function spawnMeteorites() {
+    meteoriteInterval = setInterval(() => {
+        if (animationId) {
+            meteorites.push(new Meteorite());
+        }
+    }, 5000); // Spawn a meteorite every 5 seconds
+}
+
 function stopSpawning() {
     clearInterval(enemyInterval);
     clearInterval(angelInterval);
+    clearInterval(meteoriteInterval);
 }
 
 function handleCollision() {
@@ -285,6 +366,10 @@ function animate() {
     ctx.fillStyle = 'rgba(12, 10, 24, 0.2)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    // Update and draw background elements first
+    stars.forEach(star => star.update());
+    meteorites.forEach(meteorite => meteorite.update());
+
     player.update();
     
     particles.forEach((particle, index) => {
@@ -346,6 +431,7 @@ function startGame() {
     animate();
     spawnEnemies();
     spawnAngel();
+    spawnMeteorites(); // Start spawning meteorites
     startScreen.classList.add('hidden');
     gameOverScreen.classList.add('hidden');
     shootButton.classList.remove('hidden');
@@ -362,6 +448,13 @@ window.addEventListener('resize', () => {
     canvas.height = window.innerHeight;
     if(player) {
        player.y = canvas.height - player.height - 20;
+    }
+    // Reinitialize stars to fill new canvas size
+    if (stars && stars.length > 0) {
+        stars = [];
+        for (let i = 0; i < 100; i++) {
+            stars.push(new Star());
+        }
     }
 });
 
